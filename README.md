@@ -80,7 +80,7 @@ context = ApplicationContext()
 context.initialize_adapters()
 
 # Resolve components
-controller = context.resolve_port(UserController)
+controller = context.resolve(UserController)
 result = controller.handle_request(123)
 ```
 
@@ -102,7 +102,7 @@ result = handle_user_request(123)
 ### Key Methods
 
 - `Context.initialize_adapters()`: Initialize all composite adapters
-- `Context.resolve_port(port)`: Resolve a dependency by its type
+- `Context.resolve(port)`: Resolve a dependency by its type
 - `Composite.overrides(overrides)`: Context manager for dependency overrides
 - `inject(context)`: Decorator for automatic dependency injection
 
