@@ -49,6 +49,7 @@ from typing import (
     Union, Optional
 )
 from .composite import Composite, DependencyObject
+from .strategy import ContextStrategy
 import inspect
 import functools
 from threading import current_thread
@@ -78,7 +79,7 @@ class Port(Protocol[T]):
         return None  # type: ignore
 
 
-class Adapter:
+class Adapter():
     def __class_getitem__(cls, item: Type[T]) -> T:
         return None  # type: ignore
 
@@ -162,7 +163,13 @@ class Context:
 
         data = inspect.get_annotations(self.__class__)
         for key, value in data.items():
-            if hasattr(value, '__origin__') and value.__origin__ == Composite:
+            if (
+                hasattr(value, '__origin__')
+                and (
+                    value.__origin__ == Composite
+                    or value.__origin__ == ContextStrategy
+                )
+            ):
                 if value.__args__:
                     port = value.__args__[0]
                     self.adapters[self.composite_key(port)] = getattr(

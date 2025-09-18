@@ -83,6 +83,13 @@ class Composite(Generic[T]):
             return self.model(*self.args, **self.kwargs)
         return self.model(**self.kwargs)
 
+    def __resolve__(self) -> T:
+        """
+        Indicates to context that this object can be
+        resolved without any additional information
+        """
+        return self()
+
     @contextmanager
     def overrides(
         self,
