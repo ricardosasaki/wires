@@ -29,8 +29,8 @@ class ApplicationContext(Context):
 context = ApplicationContext()
 context.initialize_adapters()
 
-controller: Controller = context.resolve_port(Controller)
-repository: RepositoryProtocol = context.resolve_port(RepositoryProtocol)
+controller: Controller = context.resolve(Controller)
+repository: RepositoryProtocol = context.resolve(RepositoryProtocol)
 ```
 
 # or use them by injecting direct into your functions:
@@ -137,13 +137,13 @@ class Context:
                 if (hasattr(dependency, '__args__') and
                         dependency.__args__):
                     target_type = dependency.__args__[0]
-                    adapter = self.resolve_port(target_type)
+                    adapter = self.resolve(target_type)
                 else:
                     adapter = self.get_constructor_value(
                         args, kwargs, arg, index
                     )
             elif dependency is not None:
-                adapter = self.resolve_port(dependency)
+                adapter = self.resolve(dependency)
 
             if adapter is None:
                 adapter = self.get_constructor_value(
@@ -174,7 +174,7 @@ class Context:
     def composite_key(self, port: Type[Union[Port[T], T]]) -> Optional[str]:
         return f"{port.__module__}.{port.__name__}"
 
-    def resolve_port(
+    def resolve(
         self, port: Type[Union[Port[T], T]],
         overrides: Optional[dict[str, Any]] = None
     ) -> Union[T, Any]:

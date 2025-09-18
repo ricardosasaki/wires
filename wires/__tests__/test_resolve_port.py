@@ -51,11 +51,11 @@ class ApplicationContext(Context):
     )
 
 
-def test_resolve_port() -> None:
+def test_resolve() -> None:
     context = ApplicationContext()
     context.initialize_adapters()
 
-    repository_adapter: RepositoryAdapter = context.resolve_port(
+    repository_adapter: RepositoryAdapter = context.resolve(
         RepositoryPort
     )
 
@@ -70,7 +70,7 @@ def test_resolve_port_with_changed_dependencies() -> None:
 
     context.random_dependency = "new dependency"
 
-    repository_adapter: RepositoryAdapter = context.resolve_port(
+    repository_adapter: RepositoryAdapter = context.resolve(
         RepositoryPort
     )
 
@@ -79,11 +79,11 @@ def test_resolve_port_with_changed_dependencies() -> None:
     assert repository_adapter.random_dependency == "random_dependency"
     assert repository_adapter.exchangable_dependency == "Hello"
 
-    repository_adapter = context.resolve_port(
+    repository_adapter = context.resolve(
         RepositoryPort,
         overrides={"exchangable_dependency": "World"}
     )
     assert repository_adapter.exchangable_dependency == "World"
 
-    service = context.resolve_port(Service)
+    service = context.resolve(Service)
     assert service.exchangable_dependency() == "Hello"
