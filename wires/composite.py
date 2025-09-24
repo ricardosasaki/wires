@@ -1,10 +1,11 @@
 from typing import (
-    Generic, TypeVar, Type, Any, Generator, Union, Self
+    Generic, TypeVar, Any, Generator, Union, Self,
 )
 from contextlib import contextmanager
 
 
-T = TypeVar('T', covariant=True)
+T = TypeVar('T')
+T_co = TypeVar('T_co', covariant=True)
 
 
 class DependencyObject(Generic[T]):
@@ -15,8 +16,11 @@ class DependencyObject(Generic[T]):
     def __call__(self) -> T:
         return self.dependency
 
+    def __resolve__(self) -> T:
+        return self.dependency
 
-class Composite(Generic[T]):
+
+class Composite(Generic[T_co]):
     """
     Simple implementation of the composite Pattern.
     Used when objects appear to have complex logic of creation
@@ -70,7 +74,7 @@ class Composite(Generic[T]):
     """
     def __init__(
         self,
-        model: Type[T],
+        model: type[T_co],
         *args: Any,
         **kwargs: Any
     ):
@@ -78,12 +82,12 @@ class Composite(Generic[T]):
         self._args = args
         self._kwargs = kwargs
 
-    def __call__(self) -> T:
+    def __call__(self) -> T_co:
         if self.args:
-            return self.model(*self.args, **self.kwargs)
-        return self.model(**self.kwargs)
+            return self.model(*self.args, **self.kwargs)  # type: ignore
+        return self.model(**self.kwargs)  # type: ignore
 
-    def __resolve__(self) -> T:
+    def __resolve__(self) -> Any:
         """
         Indicates to context that this object can be
         resolved without any additional information
@@ -94,7 +98,7 @@ class Composite(Generic[T]):
     def overrides(
         self,
         _overrides: dict[str, Union[DependencyObject, Self]]
-    ) -> Generator[T, Any, Any]:
+    ) -> Generator[T_co, Any, Any]:
         """
         Override the arguments of the composite.
         # Usage example:
@@ -110,24 +114,8 @@ class Composite(Generic[T]):
             self._args = self.original_args
             self._kwargs = self.original_kwargs
 
-    @classmethod
-    def injected(cls, model: Type[T]) -> T:  # type: ignore
-        """
-        Just a placeholder when injecting dependencies with context.
-
-        # Usage example:
-        ```
-        @inject(ApplicationContext)
-        def any_method(
-            controller: Controller = Composite.injected(Controller),
-        ) -> Controller:
-            return controller
-        ```
-        """
-        return cls(model)  # type: ignore
-
     @property
-    def args(self) -> list[Any]:
+    def args(self) -> list[T_co | Any]:
         """
         Resolve the arguments of the composite.
         # Usage example:
@@ -155,7 +143,7 @@ class Composite(Generic[T]):
             for key, value in self._kwargs.items()  # type: ignore
         }
 
-    def resolve_composite(self, arg: Union[Self, Any]) -> Union[T, Any]:
+    def resolve_composite(self, arg: Self | Any) -> T_co | Any:
         if isinstance(arg, Composite) or isinstance(arg, DependencyObject):
             return arg()
         return arg

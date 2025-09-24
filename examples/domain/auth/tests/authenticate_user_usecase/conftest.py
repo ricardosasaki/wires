@@ -22,14 +22,14 @@ def usecase():
     """Create an AuthenticateUser use case with mocked dependencies."""
     context = AuthenticationContext()
     context.initialize_adapters()
-    usecase = context.resolve_port(AuthenticateUser)
-    
+    usecase = context.resolve(AuthenticateUser)
+
     # Set up default mock behaviors
     usecase.user_repository.get_active_user = AsyncMock()
     usecase.cryptography_repository.get_settings_for = AsyncMock()
     usecase.password_encryptor.verify_password = MagicMock()
     usecase.logger.error = AsyncMock()
-    
+
     return usecase
 
 

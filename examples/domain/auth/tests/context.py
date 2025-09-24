@@ -1,5 +1,5 @@
 from unittest.mock import MagicMock, AsyncMock
-from wires import Context, Composite, DependencyObject
+from wires import Context, Composite
 from examples.domain.auth.ports.password_encryptor import PasswordEncryptor
 from examples.domain.auth.ports.persistence.cryptography_repository import (
     CryptographyRepository
@@ -12,8 +12,8 @@ from examples.domain.auth.usecases.authenticate_user import AuthenticateUser
 
 
 class AuthenticationContext(Context):
-    email: DependencyObject[str] = DependencyObject("email", "")
-    password: DependencyObject[str] = DependencyObject("password", "")
+    email: str = ""
+    password: str = ""
 
     user_repository: Composite[UserRepository] = Composite(
         MagicMock,

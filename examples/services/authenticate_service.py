@@ -8,7 +8,7 @@ class AuthenticateService:
     @inject(AuthenticationContext)
     def __init__(
         self,
-        usecase: AuthenticateUser = Composite.injected(AuthenticateUser)
+        usecase: AuthenticateUser
     ):
         self.usecase = usecase
 

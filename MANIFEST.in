@@ -1,0 +1,9 @@
+include README.md
+include LICENSE
+include pyproject.toml
+recursive-include wires *.py
+recursive-include wires/__tests__ *.py
+global-exclude *.pyc
+global-exclude __pycache__
+global-exclude .git*
+global-exclude .env*
