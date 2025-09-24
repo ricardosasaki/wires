@@ -90,7 +90,7 @@ result = controller.handle_request(123)
 @inject(ApplicationContext)
 def handle_user_request(
     user_id: int,
-    controller: UserController = Composite.injected(UserController)
+    controller: UserController
 ) -> dict:
     return controller.handle_request(user_id)
 
@@ -103,7 +103,6 @@ result = handle_user_request(123)
 
 - `Context.initialize_adapters()`: Initialize all composite adapters
 - `Context.resolve(port)`: Resolve a dependency by its type
-- `Composite.overrides(overrides)`: Context manager for dependency overrides
 - `inject(context)`: Decorator for automatic dependency injection
 
 ## Development
