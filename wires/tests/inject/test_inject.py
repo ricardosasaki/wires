@@ -16,3 +16,10 @@ class TestInject:
         )
 
         assert result == (1, 2, "test", Dependency01("Deep dependency 01"))
+
+    def test_inject_with_keyword_arguments(self, context: MockContext):
+        result = subject(
+            1, arg2=2, name="test"
+        )
+
+        assert result == (1, 2, "test", Dependency01("Deep dependency 01"))
